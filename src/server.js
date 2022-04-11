@@ -11,20 +11,21 @@ import {
   genericError,
 } from "./errorHandler/errorHandler.js";
 import createError from "http-errors";
+import { nextTick } from "process";
 // -----------------------------------------
 const server = express();
-const port = process.env.PORT || 3001;
+const { PORT } = process.env;
 const publicPath = join(process.cwd(), "./public");
 // -------------------------------------------
-const whiteList = [process.env.FE_DEV_URL, process.env.FE_REM_URL];
+const whiteList = [process.env.FE_DEV_URL];
 server.use(express.static(publicPath));
 server.use(
   cors({
-    origin: function (origin, next) {
-      if (!origin || whiteList.indexof(origin !== -1)) {
+    origin: (origin, next) => {
+      if (!origin || whiteList.indexOf(origin) !== -1) {
         next(null, true);
       } else {
-        next(createError(400, "CORS Error"));
+        next(createError(400, "cors failed!!!"));
       }
     },
   })
@@ -42,6 +43,6 @@ server.use(unauthurizedError);
 server.use(notFoundError);
 server.use(genericError);
 // ---------------------------------------------
-server.listen(port, () => {
-  console.log(`Server is Running ${port}`);
+server.listen(PORT, () => {
+  console.log(`Server is Running ${PORT}`);
 });
