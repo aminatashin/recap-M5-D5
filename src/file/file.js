@@ -26,7 +26,9 @@ fileRouter.post("/cloudinaryUploader", cloudinaryUploader, (req, res, next) => {
   try {
     console.log(req.file);
     res.send();
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default fileRouter;
