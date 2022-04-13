@@ -1,11 +1,12 @@
 import express from "express";
-import { getBlogs, writeBlogs } from "../tools/fs.js";
+import { getBlogs, writeBlogs, getReadPdf } from "../tools/fs.js";
 import creatError from "http-errors";
 import uniqid from "uniqid";
 import {
   checkPageSchema,
   checkPageValidationResult,
 } from "../validation/validator.js";
+import { pipeline } from "stream";
 
 const blogsRouter = express();
 
@@ -43,8 +44,14 @@ blogsRouter.get("/", async (req, res, next) => {
 blogsRouter.get("/:blogsId", async (req, res, next) => {
   try {
     const blogRead = await getBlogs();
+    res.setHeader("Content-Disposition", "attachment; filename=whatever.pdf");
     const findBlog = blogRead.find((find) => find.id === req.params.blogsId);
     if (findBlog) {
+      const source = getReadPdf(findBlog);
+      const destination = res;
+      pipeline(source, destination, (err) => {
+        if (err) console.log(err);
+      });
       res.send(findBlog);
     } else {
       next(creatError(404, "page not found!!!"));
@@ -53,6 +60,16 @@ blogsRouter.get("/:blogsId", async (req, res, next) => {
     next(error);
   }
 });
+blogsRouter.get("/download/pdf", async (req, res, next) => {
+  res.setHeader("Content-Disposition", "attachment; filename=whatever.pdf");
+  const blogRead = await getBlogs();
+  const source = getReadPdf(blogRead[0]);
+  const destination = res;
+  pipeline(source, destination, (err) => {
+    if (err) console.log(err);
+  });
+});
+
 blogsRouter.put("/:blogsId", async (req, res, next) => {
   try {
     const blogRead = await getBlogs();

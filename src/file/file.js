@@ -9,6 +9,7 @@ const fileRouter = express.Router();
 const cloudinaryUploader = multer({
   storage: new CloudinaryStorage({ cloudinary, params: { folder: "M5-D6" } }),
 }).single("avatar");
+// ---------------------------------------------------------------------------
 fileRouter.post(
   "/singleUpload",
   multer().single("avatar"),
