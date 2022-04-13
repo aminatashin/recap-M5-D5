@@ -44,12 +44,11 @@ blogsRouter.get("/", async (req, res, next) => {
 });
 blogsRouter.get("/downloadCsv", (req, res, next) => {
   try {
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=whatever.json.gz"
-    );
+    res.setHeader("Content-Disposition", "attachment; filename=blogs.csv");
     const source = getSource();
-    const transform = new json2csv.Transform({ fields: ["title", "content"] });
+    const transform = new json2csv.Transform({
+      fields: ["title", "content", "cover", "avatar"],
+    });
     const destination = res;
     pipeline(source, transform, destination, (err) => {
       if (err) console.log(err);
