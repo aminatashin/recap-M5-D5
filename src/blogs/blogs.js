@@ -1,5 +1,5 @@
 import express from "express";
-import { getBlogs, writeBlogs, getReadPdf } from "../tools/fs.js";
+import { getBlogs, writeBlogs, getReadPdf, getSource } from "../tools/fs.js";
 import creatError from "http-errors";
 import uniqid from "uniqid";
 import {
@@ -7,6 +7,7 @@ import {
   checkPageValidationResult,
 } from "../validation/validator.js";
 import { pipeline } from "stream";
+import json2csv from "json2csv";
 
 const blogsRouter = express();
 
@@ -43,6 +44,16 @@ blogsRouter.get("/", async (req, res, next) => {
 });
 blogsRouter.get("/downloadCsv", (req, res, next) => {
   try {
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=whatever.json.gz"
+    );
+    const source = getSource();
+    const transform = new json2csv.Transform({ fields: ["title", "content"] });
+    const destination = res;
+    pipeline(source, transform, destination, (err) => {
+      if (err) console.log(err);
+    });
   } catch (error) {
     next(error);
   }

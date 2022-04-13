@@ -15,7 +15,7 @@ export const writeAuthor = (content) => fs.writeJSON(authorPath, content);
 export const writeBlogs = (content) => fs.writeJSON(blogspath, content);
 export const saveAvatar = (filename, contentbuffer) =>
   fs.writeFile(join(usersPublicPath, filename), contentbuffer);
-export const getSourc = () => fs.createReadStream(blogspath);
+export const getSource = () => fs.createReadStream(blogspath);
 export const getReadPdf = (blog) => {
   const font = {
     Helvetica: {
