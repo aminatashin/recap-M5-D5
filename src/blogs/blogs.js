@@ -41,6 +41,12 @@ blogsRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
+blogsRouter.get("/downloadCsv", (req, res, next) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+});
 blogsRouter.get("/:blogsId", async (req, res, next) => {
   try {
     const blogRead = await getBlogs();
