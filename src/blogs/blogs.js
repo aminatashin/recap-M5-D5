@@ -6,8 +6,9 @@ import {
   checkPageSchema,
   checkPageValidationResult,
 } from "../validation/validator.js";
-import { pipeline } from "stream";
+import { pipeline } from "stream/promises";
 import json2csv from "json2csv";
+import { getAsyncPdf } from "../tools/pdf-tool.js";
 
 const blogsRouter = express();
 
@@ -41,6 +42,13 @@ blogsRouter.get("/", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+});
+
+blogsRouter.get("/downloadAsyncPdf", async function (req, res, next) {
+  const blogRead = await getBlogs();
+  const getPdfAsync = await getAsyncPdf(blogRead);
+  res.setHeader("Content-Disposition", "attachment;filename=blogs.pdf");
+  await pipeline(getPdfAsync, res);
 });
 blogsRouter.get("/downloadCsv", (req, res, next) => {
   try {
