@@ -11,7 +11,7 @@ import {
   genericError,
 } from "./errorHandler/errorHandler.js";
 import createError from "http-errors";
-import { nextTick } from "process";
+
 // -----------------------------------------
 const server = express();
 const { PORT } = process.env;
